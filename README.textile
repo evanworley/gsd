@@ -12,7 +12,7 @@ h2. Using the gem
 
 Visit "The Google Storage Key Manager":https://sandbox.google.com/storage/m/manage to get your access and secret keys.
 
-In your code just: <code>require 'gstore'</code>
+In your code just: <code>require 'gsd'</code>
 
 h2. Basic Examples
 
@@ -60,7 +60,7 @@ h3. Query parameters
 
 For certain requests like <code>get_bucket('my_unique_bucket')</code> you can specify query parameters like <code>max-keys</code>, <code>prefix</code>, <code>delimiter</code> and <code>marker</code> (see "The Google Developer Guide":http://code.google.com/apis/storage/docs/developer-guide.html) for more information.
 
-Here's an example with gstore:
+Here's an example with gsd:
 
 <pre><code>client.get_bucket('my_unique_bucket', :params => {:max_keys => 2, :prefix => 'backup'})
 </code></pre>
