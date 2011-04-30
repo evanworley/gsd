@@ -1,8 +1,6 @@
 h1. Ruby client library for the Google Storage API
 
-GSD is a ruby gem for working with "Google Storage for Developers":http://code.google.com/apis/storage/. This gem
-is based on "moomerman's GStore gem":https://github.com/moomerman/gstore. Core changes include an Object API,
-instead of raw XML responses, performance improvements, and support for more operations. This gem also depends on
+GSD is a ruby gem for working with "Google Storage for Developers":http://code.google.com/apis/storage/. This gem is based on "moomerman's GStore gem":https://github.com/moomerman/gstore. Core changes include an Object API, instead of raw XML responses, performance improvements, and support for more operations. This gem also depends on
 libxml-ruby for fast XML parsing.
 
 h2. Install the gem
