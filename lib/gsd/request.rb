@@ -6,7 +6,7 @@ require 'uri'
 require 'net/https'
 require 'cgi'
 
-module GStore
+module GSD
   class Client
     
     def signed_request(method, host, path, params={}, headers={}, options={})
@@ -25,7 +25,6 @@ module GStore
       headers.merge!({
         :Host => host,
         :Date => Time.now.utc.strftime('%a, %d %b %Y %H:%M:%S -0000')
-        #:"Content-MD5" => ''
       })
       
       if options[:data]
@@ -34,7 +33,6 @@ module GStore
         headers = headers.merge(:"Content-Length" => 0) 
       end
       headers[:"Content-Type"] ||= 'text/plain'
-      
       
       bucket = nil
       if host =~ /(\S+).#{@host}/
@@ -68,7 +66,8 @@ module GStore
         puts
       end
       
-      _http_do(method, host, path, params_to_request_string(params), headers.merge(:Authorization => authorization), options[:data])
+      _http_do(method, host, path, params_to_request_string(params), headers.merge(:Authorization => authorization), 
+               options[:data])
     end
     
     private
