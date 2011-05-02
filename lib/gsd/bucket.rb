@@ -8,7 +8,10 @@ module GSD
       doc.root.namespaces.default_prefix = 'aws'
 
       doc.find("//aws:Bucket").map do |bucket_node|
-        Bucket.new(bucket_node)
+        attrs = {}
+        attrs[:name] = bucket_node.find_first("./aws:Name").content
+        attrs[:created_at] = Time.parse(bucket_node.find_first("./aws:CreationDate").content)
+        Bucket.new(attrs)
       end
     end
 
@@ -23,7 +26,27 @@ module GSD
     end
     
     def get_bucket(bucket, options = {})
-      get(bucket, '/', options)
+      xml = get(bucket, '/', options)
+      return xml if options[:raw]
+
+      doc = LibXML::XML::Document.string(xml)
+      doc.root.namespaces.default_prefix = 'aws'
+
+      bucket_name = doc.find_first("/aws:ListBucketResult/aws:Name").content
+
+      entries = doc.find("//aws:Contents").map do |contents_node|
+        attrs = {}
+        attrs[:name] = contents_node.find_first("./aws:Key").content
+        attrs[:last_modified] = Time.parse(contents_node.find_first("./aws:LastModified").content)
+        attrs[:etag] = contents_node.find_first("./aws:ETag").content
+        attrs[:size] = contents_node.find_first("./aws:Size").content.to_i
+        attrs[:storage_class] = contents_node.find_first("./aws:StorageClass").content
+        attrs[:owner_id] = contents_node.find_first("./aws:Owner/aws:ID").content
+
+        Object.new(attrs)
+      end
+
+      Bucket.new({name: bucket_name, entries: entries})
     end
     
     def delete_bucket(bucket, options = {})
@@ -32,11 +55,12 @@ module GSD
   end
 
   class Bucket
-    attr_reader :name, :created_at
+    attr_reader :name, :created_at, :entries
 
-    def initialize(bucket_node)
-      @name = bucket_node.find_first("./aws:Name").content
-      @creation_date = Time.parse(bucket_node.find_first("./aws:CreationDate").content)
+    def initialize(options = {})
+      @name = options[:name]
+      @created_at = options[:created_at]
+      @entries = options[:entries]
     end
   end
 end
