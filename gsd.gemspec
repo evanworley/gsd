@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 2
-    s.add_dependency("libxml-ruby", [">= 2.0.2"])
+    s.add_dependency("libxml-ruby", [">= 2.0.6"])
   else
-    s.add_dependency("libxml-ruby", [">= 2.0.2"])
+    s.add_dependency("libxml-ruby", [">= 2.0.6"])
   end
 end

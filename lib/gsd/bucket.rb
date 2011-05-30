@@ -62,5 +62,9 @@ module GSD
       @created_at = options[:created_at]
       @entries = options[:entries]
     end
+
+    def to_s
+      "Bucket[name=#{name}, entries=#{entries.size}]"
+    end
   end
 end
