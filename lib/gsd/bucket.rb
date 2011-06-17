@@ -32,7 +32,9 @@ module GSD
       doc = LibXML::XML::Document.string(xml)
       doc.root.namespaces.default_prefix = 'aws'
 
-      bucket_name = doc.find_first("/aws:ListBucketResult/aws:Name").content
+      list_bucket_result = doc.find_first("/aws:ListBucketResult")
+      bucket_name = list_bucket_result.find_first("./aws:Name").content
+      truncated = list_bucket_result.find_first("./aws:IsTruncated").content == "true"
 
       entries = doc.find("//aws:Contents").map do |contents_node|
         attrs = {}
@@ -44,6 +46,13 @@ module GSD
         attrs[:owner_id] = contents_node.find_first("./aws:Owner/aws:ID").content
 
         Object.new(attrs)
+      end
+
+      if truncated
+        next_marker = list_bucket_result.find_first("./aws:NextMarker").content
+
+        more_entries = get_bucket(bucket, {:params => {:marker => next_marker}}).entries
+        entries.concat(more_entries)
       end
 
       Bucket.new({name: bucket_name, entries: entries})
